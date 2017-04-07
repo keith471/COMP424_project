@@ -32,3 +32,4 @@
 34,xxxxxxxxx,xxxxxxxxx,1,xxxxxxxxx,13,game00034.log,
 39,xxxxxxxxx,xxxxxxxxx,1,xxxxxxxxx,20,game00039.log,
 41,xxxxxxxxx,GreedyPlayer,0,xxxxxxxxx,18,game00041.log,
+42,260674699,RandomPlayer,0,260674699,29,game00042.log,
