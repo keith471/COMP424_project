@@ -1,5 +1,8 @@
 # TODO
 
+// TODO this assumes the children are not null - what if they are?
+// implement optiMinValue
+
 - add a new class - OptMinimax - that remembers the tree so that you don't have to rebuild parts of it each move
 	- get results
 - add a new class OptiAlphaBetaMinimax that remembers the tree AND uses alpha beta pruning

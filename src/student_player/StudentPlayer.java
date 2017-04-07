@@ -5,6 +5,7 @@ import bohnenspiel.BohnenspielMove;
 import bohnenspiel.BohnenspielPlayer;
 import student_player.mytools.Minimax;
 import student_player.mytools.MinimaxResponse;
+import student_player.mytools.OptiMinimax;
 
 /** A Hus player submitted by a student. */
 public class StudentPlayer extends BohnenspielPlayer {
@@ -21,6 +22,9 @@ public class StudentPlayer extends BohnenspielPlayer {
 	private int numMovesToSimulate = 3;
 	// whether or not it is the first move
 	private boolean isFirstMove = true;
+
+	// store the OptiMinimax object
+	private final OptiMinimax omm = new OptiMinimax();
 
 	/**
 	 * You must modify this constructor to return your student number. This is
@@ -87,6 +91,20 @@ public class StudentPlayer extends BohnenspielPlayer {
 		return mresp.getMove();
 	}
 	
+	private BohnenspielMove getFirstMoveOpti(BohnenspielBoardState boardState) {
+		// TODO
+		// finish initialization of OptiMinimax
+		this.omm.setRootState(boardState);
+		this.omm.setPlayer(boardState.getTurnPlayer());
+
+		return null;
+	}
+
+	private BohnenspielMove getMoveOpti(BohnenspielBoardState boardState) {
+		// TODO
+		return null;
+	}
+
 	/*
 	// Get the contents of the pits so we can use it to make decisions.
 	int[][] pits = board_state.getPits();
