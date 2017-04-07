@@ -1,0 +1,31 @@
+# Server version 0.08 running on 142.157.2.37:8123
+# Game ID: 50
+# Board class: bohnenspiel.BohnenspielBoard
+# Timeout: 700
+# First Move Timeout: 3000000
+# Date: Fri Apr 07 15:32:52 EDT 2017
+# Player 1: Player-0, 'RandomPlayer', running on 142.157.2.37
+# Player 2: Player-1, '260674699', running on 142.157.2.37
+START Player-0 RandomPlayer
+START Player-1 260674699
+PIT 0 1
+PIT 1 0
+PIT 0 0
+PIT 1 0
+PIT 0 3
+PIT 1 0
+PIT 0 5
+PIT 1 4
+PIT 0 4
+PIT 1 1
+PIT 0 3
+PIT 1 0
+PIT 0 2
+PIT 1 0
+PIT 0 5
+PIT 1 2
+PIT 0 4
+PIT 1 0
+PIT 0 2
+GAMEOVER TIMEOUT WINNER 0         Player-0 score: 6  Player-1 score: 8
+# Game ended: Fri Apr 07 15:32:56 EDT 2017

@@ -1,6 +1,9 @@
 package boardgame;
 
-import java.io.BufferedReader; import java.io.File; import java.io.FileOutputStream;
+import java.awt.EventQueue;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -11,7 +14,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-import java.awt.EventQueue;
 
 /**
  * Generic boardgame server.
@@ -54,7 +56,7 @@ public class Server implements Runnable {
     public static final int DEFAULT_TIMEOUT = 700;
     private static final int DEFAULT_TIMEOUT_CUSHION = 1000;
 
-    public static final int FIRST_MOVE_TIMEOUT = 30000;
+	public static final int FIRST_MOVE_TIMEOUT = 3000000;
     private static final int FIRST_MOVE_TIMEOUT_CUSHION = 1000;
 
     protected static final String DEFAULT_BOARDCLASS = "bohnenspiel.BohnenspielBoard";
@@ -129,14 +131,21 @@ public class Server implements Runnable {
         Vector<Server> servers = new Vector<Server>();
         try {
             for( int i =0; i< args.length; i++ ) {
-                if( args[i].equals("-p") ) cmdArgPort = Integer.parseInt(args[++i]);
-                else if( args[i].equals("-ng") ) argGui = false;
-                else if( args[i].equals("-t") ) cmdArgTimeout = Integer.parseInt(args[++i]);
-                else if( args[i].equals("-ft") ) cmdArgFirstTimeout = Integer.parseInt(args[++i]);
-                else if( args[i].equals("-q") ) cmdArgQuiet = true;
-                else if( args[i].equals("-k") ) argKeep = true;
-                else if( args[i].equals("-l") ) log_dir = args[++i];
-                else { printUsage(); return; }
+                if( args[i].equals("-p") ) {
+					cmdArgPort = Integer.parseInt(args[++i]);
+				} else if( args[i].equals("-ng") ) {
+					argGui = false;
+				} else if( args[i].equals("-t") ) {
+					cmdArgTimeout = Integer.parseInt(args[++i]);
+				} else if( args[i].equals("-ft") ) {
+					cmdArgFirstTimeout = Integer.parseInt(args[++i]);
+				} else if( args[i].equals("-q") ) {
+					cmdArgQuiet = true;
+				} else if( args[i].equals("-k") ) {
+					argKeep = true;
+				} else if( args[i].equals("-l") ) {
+					log_dir = args[++i];
+				} else { printUsage(); return; }
             }
         } catch (Exception e) { printUsage(); return; }
     // Store the comand line parameters
@@ -146,9 +155,11 @@ public class Server implements Runnable {
                 // If we have too many servers running, wait for one to finish
                 while(servers.size() >= MAX_SERVERS) {
                     for( int  i = 0; i < servers.size(); i++ ) {
-                        Server s = (Server) servers.get(i);
+                        Server s = servers.get(i);
                         synchronized(s) {
-                            if( s.gameEnded ) servers.removeElementAt(i);
+                            if( s.gameEnded ) {
+								servers.removeElementAt(i);
+							}
                         }
                     }
                     Thread.sleep(500); // Wait half a second
@@ -178,11 +189,15 @@ public class Server implements Runnable {
                 System.err.println( "Failed to start server:");
                 e.printStackTrace();
                 printUsage();
-                if( ss != null ) try { ss.close(); } catch(Exception ex) {}
+                if( ss != null ) {
+					try { ss.close(); } catch(Exception ex) {}
+				}
                 return;
             }
         } while( argKeep );
-        if( ss != null ) try { ss.close(); } catch(Exception e) {}
+        if( ss != null ) {
+			try { ss.close(); } catch(Exception e) {}
+		}
     }
 
     /** Create a server which accepts two connections from the
@@ -206,7 +221,9 @@ public class Server implements Runnable {
         this.first_move_timeout = fto;
         this.quiet = qt;
         this.svrSock = null;
-        if( createGUI ) this.gui = new ServerGUI(this);
+        if( createGUI ) {
+			this.gui = new ServerGUI(this);
+		}
         players = new ClientHandler[b.getNumberOfPlayers()];
     }
 
@@ -235,7 +252,8 @@ public class Server implements Runnable {
 
     // The run method just starts the server's connections and
     // then returns.
-    public void run() {
+    @Override
+	public void run() {
         // Get the logfile directory
         logDir = new File(log_dir);
         if( !logDir.isDirectory() ){
@@ -275,8 +293,9 @@ public class Server implements Runnable {
             int accepted = 0;
             while (!gameEnded && accepted < board.getNumberOfPlayers()) {
 
-                if( gui != null )
-                    new RWaitFor( board.getNameForID(accepted) );
+                if( gui != null ) {
+					new RWaitFor( board.getNameForID(accepted) );
+				}
 
                 Socket client = ss.accept();
                 players[accepted] =
@@ -290,13 +309,17 @@ public class Server implements Runnable {
                 accepted++;
             }
         } catch(Exception e) {
-            if( gameEnded ) return; // The game is cancelled, this is OK
+            if( gameEnded )
+			 {
+				return; // The game is cancelled, this is OK
+			}
             System.err.println( "Failed to accept connections:" );
             e.printStackTrace();
             endGame("CONNECTION ERROR");
         } finally {
-            if( ownSocket )
-                try { svrSock.close(); } catch (Exception e ) {}
+            if( ownSocket ) {
+				try { svrSock.close(); } catch (Exception e ) {}
+			}
             // Tell any other threads we're done accepting connections
             synchronized(this) { svrSock = null;}
         }
@@ -304,9 +327,12 @@ public class Server implements Runnable {
 
     /** receives messages from the client sockets */
     private synchronized void processMessage(String inputLine, ClientHandler h ) {
-        if( DBGNET )
-            System.out.println( board.getNameForID(h.getPlayerID()) + "> " + inputLine );
-        if( gameEnded ) return;
+        if( DBGNET ) {
+			System.out.println( board.getNameForID(h.getPlayerID()) + "> " + inputLine );
+		}
+        if( gameEnded ) {
+			return;
+		}
 
         // If the game has started, only want message if it's your turn!
         if( gameStarted && h.getPlayerID() != board.getTurnPlayer() ) {
@@ -320,8 +346,11 @@ public class Server implements Runnable {
             h.setReady( inputLine.substring(5).trim() );
 
             // Start the game if everyone is ready
-            for( int i = 0; i < board.getNumberOfPlayers(); i++ )
-                if( players[i] == null || !players[i].isReady() ) return;
+            for( int i = 0; i < board.getNumberOfPlayers(); i++ ) {
+				if( players[i] == null || !players[i].isReady() ) {
+					return;
+				}
+			}
 
             try {
                 initLogFile();
@@ -331,8 +360,9 @@ public class Server implements Runnable {
                 // is ready to process move requests from any human players
                 if( gui != null ) {
                     String p[] = new String[players.length];
-                    for( int i = 0; i < players.length; i++ )
-                        p[i] = players[i].getName();
+                    for( int i = 0; i < players.length; i++ ) {
+						p[i] = players[i].getName();
+					}
                     //gui.gameStarted(board,gameID,p);
                     new RStarting(board, gameID, p);
                 }
@@ -407,12 +437,16 @@ public class Server implements Runnable {
                 for( int i = 0; i < ms.length; i++ ) {
                     m = ms[i];
                     board.move(m);
-                    if( gui != null ) new RUpdated( board, m);//gui.boardUpdated( m );
+                    if( gui != null )
+					 {
+						new RUpdated( board, m);//gui.boardUpdated( m );
+					}
                     broadcast(m);
                 }
 
-                if( DUMPBOARD )
-                    System.out.println( board.toString() );
+                if( DUMPBOARD ) {
+					System.out.println( board.toString() );
+				}
 
                 if( board.getWinner() != Board.NOBODY ){
                     endGame("");
@@ -432,8 +466,9 @@ public class Server implements Runnable {
     private void initLogFile() throws Exception {
         // Find an unused filename
         File[] files = logDir.listFiles();
-        if( files == null )
-            throw new IOException( "Log directory doesn't seem to exist." );
+        if( files == null ) {
+			throw new IOException( "Log directory doesn't seem to exist." );
+		}
 
         int max = 0, plen = LOG_PREFIX.length(), slen = LOG_SUFFIX.length();
         for( int i = 0; i < files.length; i++ ) {
@@ -442,7 +477,9 @@ public class Server implements Runnable {
 
                 int v = Integer.parseInt( files[i].getName().substring(plen,
                                 files[i].getName().length() - slen));
-                if( v > max ) max = v;
+                if( v > max ) {
+					max = v;
+				}
             }
         }
 
@@ -462,8 +499,9 @@ public class Server implements Runnable {
         logOut.println("# First Move Timeout: " + first_move_timeout);
         logOut.println("# Date: " + (new Date()).toString() );
 
-        if( history!=null )
-            logOut.println( "# Starting at move " + (history.length + 1) );
+        if( history!=null ) {
+			logOut.println( "# Starting at move " + (history.length + 1) );
+		}
 
         for( int i = 0; i < players.length; i++ ) {
             logOut.println("# Player " + (i+1) +": " +
@@ -497,16 +535,18 @@ public class Server implements Runnable {
     }
 
     private void endGame( String reason ) {
-        if( gameEnded )
-            return;
+        if( gameEnded ) {
+			return;
+		}
 
         gameEnded = true;
 
         // Maybe we're still waiting for connections. Closing the
         // server socket will cause an exception in that thread.
         synchronized( this ) {
-            if( svrSock != null )
-                try {svrSock.close();} catch (IOException e) {}
+            if( svrSock != null ) {
+				try {svrSock.close();} catch (IOException e) {}
+			}
         }
 
         // Make sure we get rid of the timer
@@ -528,13 +568,19 @@ public class Server implements Runnable {
             default: msg += "WINNER " + board.getWinner() + "         Player-0 score: " +board.getScore(0) + "  Player-1 score: " +board.getScore(1);
         }
 
-        if( gui != null ) new REnded(msg); //gui.gameEnded(msg);
+        if( gui != null )
+		 {
+			new REnded(msg); //gui.gameEnded(msg);
+		}
 
         broadcast( msg );
 
         // Close sockets
-        for( int i = 0; i < players.length; i++ )
-            if( players[i] != null) players[i].closeConnection();
+        for( int i = 0; i < players.length; i++ ) {
+			if( players[i] != null) {
+				players[i].closeConnection();
+			}
+		}
 
         // Close the log file
         if( logOut != null ) {
@@ -550,9 +596,9 @@ public class Server implements Runnable {
 
                 int win = -1;
                 for( int i = 0; i<players.length; i++ ) {
-                    if( players[i] == null)
-                        out.print( "NOBODY" + delim );
-                    else {
+                    if( players[i] == null) {
+						out.print( "NOBODY" + delim );
+					} else {
                         out.print( players[i].getName() + delim);
 
                         if( board.getWinner() == players[i].getPlayerID() ){
@@ -606,11 +652,13 @@ public class Server implements Runnable {
         final int f_player_id = player_id;
 
         timeoutTask = new TimerTask() {
-            public void run() { timeOut(f_player_id); }
+            @Override
+			public void run() { timeOut(f_player_id); }
         };
 
         killTimeoutTask = new TimerTask() {
-            public void run() { killTimeOut(f_player_id); }
+            @Override
+			public void run() { killTimeOut(f_player_id); }
         };
 
         timer.schedule( timeoutTask, timeout );
@@ -619,22 +667,33 @@ public class Server implements Runnable {
 
     // So the GUI can cancel the timeout
     synchronized void cancelTimeout() {
-        if( timeoutTask != null ) timeoutTask.cancel();
-        if( killTimeoutTask != null ) killTimeoutTask.cancel();
+        if( timeoutTask != null ) {
+			timeoutTask.cancel();
+		}
+        if( killTimeoutTask != null ) {
+			killTimeoutTask.cancel();
+		}
         timeoutTask = null;
         killTimeoutTask = null;
     }
 
     private void log( String str ) {
-        if( !quiet ) System.out.println( "% " + str );
-        if( logOut != null ) logOut.println( str );
+        if( !quiet ) {
+			System.out.println( "% " + str );
+		}
+        if( logOut != null ) {
+			logOut.println( str );
+		}
     }
 
     /** Send string to all players */
     private void broadcast( String str ) {
         log( str );
-        for( int i = 0; i < board.getNumberOfPlayers(); i++ )
-            if( players[i] != null) players[i].send(str);
+        for( int i = 0; i < board.getNumberOfPlayers(); i++ ) {
+			if( players[i] != null) {
+				players[i].send(str);
+			}
+		}
     }
 
     /** Send string to all players */
@@ -643,8 +702,11 @@ public class Server implements Runnable {
             log( str );
         }
 
-        for( int i = 0; i < board.getNumberOfPlayers(); i++ )
-            if( players[i] != null) players[i].send(str);
+        for( int i = 0; i < board.getNumberOfPlayers(); i++ ) {
+			if( players[i] != null) {
+				players[i].send(str);
+			}
+		}
     }
 
     /** Send move m to the players identified by m.getReceivers() */
@@ -671,10 +733,11 @@ public class Server implements Runnable {
     }
 
     private void forceLoser( int c ) {
-        if( c == Board.BOARD )
-            board.forceWinner( Board.DRAW );
-        else
-            board.forceWinner((c + 1) % 2);
+        if( c == Board.BOARD ) {
+			board.forceWinner( Board.DRAW );
+		} else {
+			board.forceWinner((c + 1) % 2);
+		}
     }
 
     // Runnables to call the GUI's methods in the dispatch thread
@@ -682,24 +745,28 @@ public class Server implements Runnable {
         String who;
         public RWaitFor( String str ) {
             who = str; EventQueue.invokeLater(this); }
-        public void run() { gui.waitingForConnection( who ); } }
+        @Override
+		public void run() { gui.waitingForConnection( who ); } }
     private class RStarting implements Runnable {
         String who[]; Board b; int id;
         public RStarting( Board bd, int i, String str[] ) {
             who = str; b = (Board)bd.clone(); id = i;
             EventQueue.invokeLater(this); }
-        public void run() { gui.gameStarted( b, id, who ); } }
+        @Override
+		public void run() { gui.gameStarted( b, id, who ); } }
     private class RUpdated implements Runnable {
         Board b; Move m;
         public RUpdated(Board bb, Move mm) {
             b = (Board) bb.clone(); m = mm;
             EventQueue.invokeLater(this); }
-        public void run() { gui.boardUpdated( b, m ); } }
+        @Override
+		public void run() { gui.boardUpdated( b, m ); } }
     private class REnded implements Runnable {
         String how;
         public REnded( String str ) {
             how = str; EventQueue.invokeLater(this); }
-        public void run() { gui.gameEnded( how ); } }
+        @Override
+		public void run() { gui.gameEnded( how ); } }
 
     /** Communicates with one client. */
     class ClientHandler implements Runnable {
@@ -769,13 +836,16 @@ public class Server implements Runnable {
 
         public boolean isReady() { return ready; }
 
-        public void run() {
+        @Override
+		public void run() {
             String inputLine;
             try {
                 while (true) {
                     // Check if the connection has been closed, and get out of
                     // here if that's the case
-                    synchronized(this) { if( closed ) break; }
+                    synchronized(this) { if( closed ) {
+						break;
+					} }
                     // Blocking read
                     inputLine = sockIn.readLine();
 
@@ -811,9 +881,10 @@ public class Server implements Runnable {
         /** Send a string to this client. */
         public synchronized void send(String msg) {
             if(!closed) {
-                if( Server.DBGNET )
-                    System.out.println(
+                if( Server.DBGNET ) {
+					System.out.println(
                         server.board.getNameForID(getPlayerID()) + "< " + msg );
+				}
 
                 sockOut.println(msg);
             }
