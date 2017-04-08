@@ -43,8 +43,7 @@ public class Minimax {
 			BohnenspielBoardState clonedBoardState = (BohnenspielBoardState) boardState.clone();
 			// make the move on the cloned board state
 			clonedBoardState.move(move);
-			// get net score expected if we make this move (not including any
-			// gain from the move itself)
+			// get net score expected if we make this move
 			projectedMoveScore = minValue(clonedBoardState, movesToGo - 1);
 			if (projectedMoveScore == Integer.MAX_VALUE) {
 				// this move results in us winning --> take it

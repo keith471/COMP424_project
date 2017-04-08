@@ -20,17 +20,17 @@ public class GameTreeNode {
 	// tree)
 	private final BohnenspielMove move;
 
-	// has the player whose turn it is
-	private final int player;
-
 	// has the child board states
 	private ArrayList<GameTreeNode> children;
 
-	public GameTreeNode(BohnenspielBoardState boardState, BohnenspielMove move, int player) {
+	public GameTreeNode(BohnenspielBoardState boardState, BohnenspielMove move) {
 		this.boardState = boardState;
 		this.move = move;
-		this.player = player;
 		this.children = new ArrayList<GameTreeNode>();
+	}
+
+	public void addChild(GameTreeNode n) {
+		this.children.add(n);
 	}
 
 	public BohnenspielBoardState getBoardState() {
@@ -42,7 +42,7 @@ public class GameTreeNode {
 	}
 
 	public int getPlayer() {
-		return this.player;
+		return this.boardState.getTurnPlayer();
 	}
 
 	public ArrayList<GameTreeNode> getChildren() {

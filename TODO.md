@@ -1,7 +1,8 @@
 # TODO
 
-// TODO this assumes the children are not null - what if they are?
-// implement optiMinValue
+- implement optiMinValue
+- try to refactor so it is a bit cleaner!
+- try running it!
 
 - add a new class - OptMinimax - that remembers the tree so that you don't have to rebuild parts of it each move
 	- get results
