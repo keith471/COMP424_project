@@ -26,10 +26,13 @@ public class GameTreeNode {
 	public GameTreeNode(BohnenspielBoardState boardState, BohnenspielMove move) {
 		this.boardState = boardState;
 		this.move = move;
-		this.children = new ArrayList<GameTreeNode>();
+		this.children = null;
 	}
 
 	public void addChild(GameTreeNode n) {
+		if (this.children == null) {
+			this.children = new ArrayList<GameTreeNode>();
+		}
 		this.children.add(n);
 	}
 

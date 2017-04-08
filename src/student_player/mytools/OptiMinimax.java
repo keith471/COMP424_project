@@ -43,6 +43,15 @@ public class OptiMinimax {
 		// alpha beta pruning!
 		GameTreeNode currNode = this.getNodeCorrespondingToState(boardState);
 
+		// it is possible that currNode is null (if we didn't fully expand the
+		// tree along all paths in a previous step)
+		if (currNode == null) {
+			// we don't need to know the move taken to get here, nor the parent
+			// node, since we will not visit this node in the tree again
+			currNode = new GameTreeNode(boardState, null);
+			this.addNodeToConfigs(currNode);
+		}
+
 		// if the children of the current node are null, then we perform regular
 		// minimax
 		if (currNode.getChildren() == null) {
@@ -177,8 +186,61 @@ public class OptiMinimax {
 	}
 
 	private int optiMinValue(GameTreeNode node, int movesToGo) {
-		// TODO implement
-		return 0;
+		if (node.getBoardState().gameOver()) {
+			if (node.getBoardState().getWinner() == this.player) {
+				return Integer.MAX_VALUE;
+			} else {
+				return Integer.MIN_VALUE;
+			}
+		} else if (movesToGo == 0) {
+			return getUtility(node.getBoardState());
+		}
+
+		int bestScore = Integer.MAX_VALUE;
+
+		int projectedMoveScore;
+
+		// if the children of the node are null, then we perform regular minimax
+		if (node.getChildren() == null) {
+			for (BohnenspielMove move : node.getBoardState().getLegalMoves()) {
+				BohnenspielBoardState clonedBoardState = (BohnenspielBoardState) node.getBoardState().clone();
+				clonedBoardState.move(move);
+				// create a new GameTreeNode for the state
+				GameTreeNode n = new GameTreeNode(clonedBoardState, move);
+				// make this node a child of the node
+				node.addChild(n);
+				// save the node in the map
+				this.configs.put(this.getKey(clonedBoardState), n);
+				// compute the score for traversing this path
+				projectedMoveScore = maxValue(n, clonedBoardState, movesToGo - 1);
+				if (projectedMoveScore == Integer.MAX_VALUE) {
+					// this move results in the min player losing
+					continue;
+				} else if (projectedMoveScore == Integer.MIN_VALUE) {
+					// this move results in the min player winning
+					return Integer.MIN_VALUE;
+				}
+				if (projectedMoveScore < bestScore) {
+					bestScore = projectedMoveScore;
+				}
+			}
+		} else {
+			for (GameTreeNode n : node.getChildren()) {
+				projectedMoveScore = optiMaxValue(n, movesToGo - 1);
+				if (projectedMoveScore == Integer.MAX_VALUE) {
+					// this move results in the min player losing
+					continue;
+				} else if (projectedMoveScore == Integer.MIN_VALUE) {
+					// this move results in the min player winning
+					return Integer.MIN_VALUE;
+				}
+				if (projectedMoveScore < bestScore) {
+					bestScore = projectedMoveScore;
+				}
+			}
+		}
+
+		return bestScore;
 	}
 
 	/**
@@ -272,7 +334,13 @@ public class OptiMinimax {
 		StringBuffer buff = new StringBuffer();
 		int[][] pits = state.getPits();
 		for (int i = 0; i < 6; i++) {
+			if (pits[0][i] < 10) {
+				buff.append('0');
+			}
 			buff.append(pits[0][i]);
+			if (pits[1][i] < 10) {
+				buff.append('0');
+			}
 			buff.append(pits[1][i]);
 		}
 		// to handle the fact that the same board configuration could be
@@ -301,10 +369,11 @@ public class OptiMinimax {
 	}
 
 	// GETTERS AND SETTERS
+
 	public void setRootState(BohnenspielBoardState state) {
 		this.root = new GameTreeNode(state, null);
 		// add the root to configs
-		addNodeToConfigs(this.root);
+		this.addNodeToConfigs(this.root);
 	}
 
 	public void setPlayer(int player) {

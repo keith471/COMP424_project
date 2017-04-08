@@ -2,6 +2,7 @@ package student_player;
 
 import bohnenspiel.BohnenspielBoardState;
 import bohnenspiel.BohnenspielMove;
+import bohnenspiel.BohnenspielMove.MoveType;
 import bohnenspiel.BohnenspielPlayer;
 import student_player.mytools.Minimax;
 import student_player.mytools.MinimaxResponse;
@@ -16,10 +17,10 @@ public class StudentPlayer extends BohnenspielPlayer {
 	private static final int MAX_TIME_FIRST_MOVE = 30000;
 	private static final int BUFFER_TIME = 100;
 	// cap on the maximum number of moves allowed
-	private static final int MAX_MOVES = 7;
+	private static final int MAX_MOVES = 5;
 
 	// number of moves to begin with (a good number determined experimentally)
-	private int numMovesToSimulate = 3;
+	private int numMovesToSimulate = 5;
 	// whether or not it is the first move
 	private boolean isFirstMove = true;
 
@@ -46,17 +47,21 @@ public class StudentPlayer extends BohnenspielPlayer {
 		// minimax
 		if (this.isFirstMove) {
 			this.isFirstMove = false;
-			return getFirstMove(boardState);
+			return getFirstMoveOpti(boardState);
 		}
 
-		return getMove(boardState);
+		return getMoveOpti(boardState);
 	}
 
 	private BohnenspielMove getFirstMove(BohnenspielBoardState boardState) {
-		// TODO improve: note - never a good idea to waste a skip on the first
-		// move!
+		// TODO improve
 		Minimax mm = new Minimax(boardState.getTurnPlayer());
-		MinimaxResponse mresp = mm.minimaxDecision(boardState, 8);
+		MinimaxResponse mresp = mm.minimaxDecision(boardState, 6);
+
+		// don't waste a skip on the first move
+		if (mresp.getMove().getMoveType() == MoveType.SKIP) {
+			return (BohnenspielMove) boardState.getRandomMove();
+		}
 
 		return mresp.getMove();
 	}
@@ -67,6 +72,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 		MinimaxResponse mresp = mm.minimaxDecision(boardState, this.numMovesToSimulate);
 		long end = System.currentTimeMillis();
 
+		/*
 		// update the number of moves to simulate
 		if ((end - start) >= MAX_TIME) {
 			// back-off
@@ -77,6 +83,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 				this.numMovesToSimulate++;
 			}
 		}
+		*/
 
 		// if Minimax says we should skip, then try to skip
 		if (mresp.getShouldSkip()) {
@@ -92,17 +99,50 @@ public class StudentPlayer extends BohnenspielPlayer {
 	}
 	
 	private BohnenspielMove getFirstMoveOpti(BohnenspielBoardState boardState) {
-		// TODO
 		// finish initialization of OptiMinimax
 		this.omm.setRootState(boardState);
 		this.omm.setPlayer(boardState.getTurnPlayer());
 
-		return null;
+		MinimaxResponse mresp = this.omm.optiMinimaxDecision(boardState, 6);
+
+		// don't waste a skip on the first move
+		if (mresp.getMove().getMoveType() == MoveType.SKIP) {
+			return (BohnenspielMove) boardState.getRandomMove();
+		}
+
+		return mresp.getMove();
 	}
 
 	private BohnenspielMove getMoveOpti(BohnenspielBoardState boardState) {
-		// TODO
-		return null;
+		long start = System.currentTimeMillis();
+		MinimaxResponse mresp = this.omm.optiMinimaxDecision(boardState, this.numMovesToSimulate);
+		long end = System.currentTimeMillis();
+
+		/*
+		// update the number of moves to simulate
+		if ((end - start) >= MAX_TIME) {
+			// back-off
+			this.numMovesToSimulate = Math.min(1, this.numMovesToSimulate - 2);
+		} else if (this.numMovesToSimulate < MAX_MOVES && mresp.getFullSimulation()) {
+			// potentially increase the number of moves to simulate
+			if ((end - start + BUFFER_TIME) < MAX_TIME) {
+				this.numMovesToSimulate++;
+			}
+		}
+		*/
+
+		// if Minimax says we should skip, then try to skip
+		if (mresp.getShouldSkip()) {
+			if (boardState.getCredit(boardState.getTurnPlayer()) > 0) {
+				return new BohnenspielMove("skip", boardState.getTurnPlayer());
+			} else {
+				// try a random move and hope for the best
+				System.out.println("says should skip");
+				return (BohnenspielMove) boardState.getRandomMove();
+			}
+		}
+
+		return mresp.getMove();
 	}
 
 	/*

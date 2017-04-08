@@ -1,8 +1,8 @@
 # TODO
 
-- implement optiMinValue
-- try to refactor so it is a bit cleaner!
-- try running it!
+- run through optiminimax once in debug mode
+- try OptiMinimax on Trottier servers
+- add new class AlphaBeta minimax that improves upon Minimax
 
 - add a new class - OptMinimax - that remembers the tree so that you don't have to rebuild parts of it each move
 	- get results
