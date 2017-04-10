@@ -17,7 +17,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	// the maximum amount of time in milliseconds that we have to make the first move
 	private static final int BUFFER_TIME = 100;
 	// cap on the maximum number of moves allowed
-	private static final int MAX_MOVES = 11;
+	private static final int MAX_MOVES = 10;
 	// 11 moves is sometimes too many early in the game
 	private static final int EARLY_MAX_MOVES = 10;
 	// we make EARLY_MAX_MOVES the maximum number of allowable moves up to
