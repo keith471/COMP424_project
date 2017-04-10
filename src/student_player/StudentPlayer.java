@@ -19,7 +19,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	// cap on the maximum number of moves allowed
 	private static final int MAX_MOVES = 10;
 	// 11 moves is sometimes too many early in the game
-	private static final int EARLY_MAX_MOVES = 10;
+	private static final int EARLY_MAX_MOVES = 9;
 	// we make EARLY_MAX_MOVES the maximum number of allowable moves up to
 	// NUM_EARLY_MOVES moves into the game
 	private static final int NUM_EARLY_MOVES = 8;
@@ -28,7 +28,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 
 	private int numMovesMade = 0;
 	// number of moves to begin with (a good number determined experimentally)
-	private int numMovesToSimulate = 8;
+	private int numMovesToSimulate = 9;
 
 	// store the OptiMinimax object
 	private final OptiMinimax omm = new OptiMinimax();
