@@ -28,7 +28,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 
 	private int numMovesMade = 0;
 	// number of moves to begin with (a good number determined experimentally)
-	private int numMovesToSimulate = 8;
+	private int numMovesToSimulate = 9;
 
 	// store the OptiMinimax object
 	private final OptiMinimax omm = new OptiMinimax();
@@ -76,13 +76,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, INITIAL_MOVES);
 		long end = System.currentTimeMillis();
 		System.out.println("First move computed in " + (end - start) + " milliseconds");
-
-		// don't waste a skip on the first move
-		/*
-		if (mresp.getMove().getMoveType() == MoveType.SKIP) {
-			return (BohnenspielMove) boardState.getRandomMove();
-		}
-		*/
 		this.numMovesMade++;
 		return mresp.getMove();
 	}
@@ -101,6 +94,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 		System.out.println("simulated " + this.numMovesToSimulate + " moves in " + (end - start) + " milliseconds");
 
 		// update the number of moves to simulate
+		/*
 		if ((end - start) >= MAX_TIME) {
 			// exponential back-off
 			this.numMovesToSimulate = Math.max(1, this.numMovesToSimulate / 2);
@@ -111,6 +105,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 		} else if (this.numMovesToSimulate < MAX_MOVES && (end - start + BUFFER_TIME) < MAX_TIME) {
 			this.numMovesToSimulate++;
 		}
+		*/
 
 		// if Minimax says we should skip, then try to skip
 		if (mresp.getShouldSkip()) {
