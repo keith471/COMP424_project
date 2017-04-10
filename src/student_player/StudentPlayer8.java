@@ -15,18 +15,18 @@ public class StudentPlayer8 extends BohnenspielPlayer {
 	// move
 	private static final int BUFFER_TIME = 100;
 	// cap on the maximum number of moves allowed
-	private static final int MAX_MOVES = 10;
+	private static final int MAX_MOVES = 11;
 	// 11 moves is sometimes too many early in the game
 	private static final int EARLY_MAX_MOVES = 10;
 	// we make EARLY_MAX_MOVES the maximum number of allowable moves up to
 	// NUM_EARLY_MOVES moves into the game
-	private static final int NUM_EARLY_MOVES = 8;
+	private static final int NUM_EARLY_MOVES = 10;
 	// the number of moves to take in the initial move
 	private static final int INITIAL_MOVES = 10;
 
 	private int numMovesMade = 0;
 	// number of moves to begin with (a good number determined experimentally)
-	private int numMovesToSimulate = 7;
+	private int numMovesToSimulate = 9;
 
 	/**
 	 * You must modify this constructor to return your student number. This is

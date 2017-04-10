@@ -17,12 +17,12 @@ public class StudentPlayer extends BohnenspielPlayer {
 	// the maximum amount of time in milliseconds that we have to make the first move
 	private static final int BUFFER_TIME = 100;
 	// cap on the maximum number of moves allowed
-	private static final int MAX_MOVES = 10;
+	private static final int MAX_MOVES = 11;
 	// 11 moves is sometimes too many early in the game
 	private static final int EARLY_MAX_MOVES = 10;
 	// we make EARLY_MAX_MOVES the maximum number of allowable moves up to
 	// NUM_EARLY_MOVES moves into the game
-	private static final int NUM_EARLY_MOVES = 8;
+	private static final int NUM_EARLY_MOVES = 10;
 	// the number of moves to take in the initial move
 	private static final int INITIAL_MOVES = 10;
 
@@ -94,7 +94,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 		System.out.println("simulated " + this.numMovesToSimulate + " moves in " + (end - start) + " milliseconds");
 
 		// update the number of moves to simulate
-		/*
 		if ((end - start) >= MAX_TIME) {
 			// exponential back-off
 			this.numMovesToSimulate = Math.max(1, this.numMovesToSimulate / 2);
@@ -105,7 +104,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 		} else if (this.numMovesToSimulate < MAX_MOVES && (end - start + BUFFER_TIME) < MAX_TIME) {
 			this.numMovesToSimulate++;
 		}
-		*/
 
 		// if Minimax says we should skip, then try to skip
 		if (mresp.getShouldSkip()) {
