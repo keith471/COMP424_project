@@ -21,7 +21,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	private static final int MAX_MOVES = 15;
 
 	// number of moves to begin with (a good number determined experimentally)
-	private int numMovesToSimulate = 8;
+	private int numMovesToSimulate = 9;
 	// whether or not it is the first move
 	private boolean isFirstMove = true;
 
@@ -64,9 +64,11 @@ public class StudentPlayer extends BohnenspielPlayer {
 		MinimaxResponse mresp = mm.minimaxDecision(boardState, 6);
 
 		// don't waste a skip on the first move
+		/*
 		if (mresp.getMove().getMoveType() == MoveType.SKIP) {
 			return (BohnenspielMove) boardState.getRandomMove();
 		}
+		*/
 
 		return mresp.getMove();
 	}
@@ -107,31 +109,35 @@ public class StudentPlayer extends BohnenspielPlayer {
 
 	private BohnenspielMove getFirstMoveAB(BohnenspielBoardState boardState) {
 		// TODO improve
-		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer());
+		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), "scoreDifference");
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, 10);
 
 		// don't waste a skip on the first move
+		/*
 		if (mresp.getMove().getMoveType() == MoveType.SKIP) {
 			return (BohnenspielMove) boardState.getRandomMove();
 		}
+		*/
 
 		return mresp.getMove();
 	}
 
 	private BohnenspielMove getMoveAB(BohnenspielBoardState boardState) {
-		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer());
+		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), "scoreDifference");
 		long start = System.currentTimeMillis();
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, this.numMovesToSimulate);
 		long end = System.currentTimeMillis();
-		System.out.println("simulated " + this.numMovesToSimulate + " moves in " + (end - start) + " milliseconds");
+		//System.out.println("simulated " + this.numMovesToSimulate + " moves in " + (end - start) + " milliseconds");
 
 		// update the number of moves to simulate
+		/*
 		if ((end - start) >= MAX_TIME) {
 			// exponential back-off
 			this.numMovesToSimulate = Math.max(1, this.numMovesToSimulate / 2);
 		} else if (this.numMovesToSimulate < MAX_MOVES && (end - start + BUFFER_TIME) < MAX_TIME) {
 			this.numMovesToSimulate++;
 		}
+		*/
 
 		// if Minimax says we should skip, then try to skip
 		if (mresp.getShouldSkip()) {
@@ -170,14 +176,13 @@ public class StudentPlayer extends BohnenspielPlayer {
 		MinimaxResponse mresp = this.omm.optiMinimaxDecision(boardState, this.numMovesToSimulate);
 		long end = System.currentTimeMillis();
 
-		/*
-		 * // update the number of moves to simulate if ((end - start) >=
-		 * MAX_TIME) { // back-off this.numMovesToSimulate = Math.max(1,
-		 * this.numMovesToSimulate - 2); } else if (this.numMovesToSimulate <
-		 * MAX_MOVES && mresp.getFullSimulation()) { // potentially increase the
-		 * number of moves to simulate if ((end - start + BUFFER_TIME) <
-		 * MAX_TIME) { this.numMovesToSimulate++; } }
-		 */
+		// update the number of moves to simulate
+		if ((end - start) >= MAX_TIME) {
+			// exponential back-off
+			this.numMovesToSimulate = Math.max(1, this.numMovesToSimulate / 2);
+		} else if (this.numMovesToSimulate < MAX_MOVES && (end - start + BUFFER_TIME) < MAX_TIME) {
+			this.numMovesToSimulate++;
+		}
 
 		// if Minimax says we should skip, then try to skip
 		if (mresp.getShouldSkip()) {
@@ -192,29 +197,4 @@ public class StudentPlayer extends BohnenspielPlayer {
 
 		return mresp.getMove();
 	}
-
-	/*
-	// Get the contents of the pits so we can use it to make decisions.
-	int[][] pits = board_state.getPits();
-
-	// Use ``player_id`` and ``opponent_id`` to get my pits and opponent
-	// pits.
-	int[] my_pits = pits[player_id];
-	int[] op_pits = pits[opponent_id];
-
-	// Use code stored in ``mytools`` package.
-	MyTools.getSomething();
-
-	// Get the legal moves for the current board state.
-	ArrayList<BohnenspielMove> moves = board_state.getLegalMoves();
-	BohnenspielMove move = moves.get(0);
-
-	// We can see the effects of a move like this...
-	BohnenspielBoardState cloned_board_state = (BohnenspielBoardState) board_state.clone();
-	cloned_board_state.move(move);
-
-	// But since this is a placeholder algorithm, we won't act on that
-	// information.
-	return move;
-	*/
 }

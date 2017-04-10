@@ -12,11 +12,16 @@ import student_player.exceptions.InvalidDepthException;
  */
 public class AlphaBetaMinimax {
 
+	private static final int MAX_BEANS = 72;
+
 	// the id of the max player
 	private int player;
+	// the name of the utility function
+	private String utilityFunction;
 
-	public AlphaBetaMinimax(int player) {
+	public AlphaBetaMinimax(int player, String utilityFunction) {
 		this.player = player;
+		this.utilityFunction = utilityFunction;
 	}
 
 	/**
@@ -164,8 +169,25 @@ public class AlphaBetaMinimax {
 		return bestScore;
 	}
 
-	private int getUtility(BohnenspielBoardState boardState) {
-		return scoreDifference(boardState);
+	private int getUtility(BohnenspielBoardState boardState) throws UndefinedUtilityFunctionException {
+		if (this.utilityFunction.equals("scoreDifference")) {
+			return scoreDifference(boardState);
+		} else if (this.utilityFunction.equals("scoreAndBeanDifference")) {
+			return scoreAndBeanDifference(boardState);
+		} else if (this.utilityFunction.equals("scoreAndBeanDifference2")) {
+			return scoreAndBeanDifference2(boardState);
+		} else if (this.utilityFunction.equals("scoreAndBeanDifferenceWithBeansLeft")) {
+			return scoreAndBeanDifferenceWithBeansLeft(boardState);
+		} else if (this.utilityFunction.equals("scoreAndBeanDifferenceWithBeansLeft2")) {
+			return scoreAndBeanDifferenceWithBeansLeft2(boardState);
+		} else if (this.utilityFunction.equals("scoreAndBeanDifferenceWithBeansLeft3")) {
+			return scoreAndBeanDifferenceWithBeansLeft3(boardState);
+		} else if (this.utilityFunction.equals("scoreAndBeanDifferenceWithBeansLeft4")) {
+			return scoreAndBeanDifferenceWithBeansLeft4(boardState);
+		} else if (this.utilityFunction.equals("scoreDifferenceWithBeansLeft")) {
+			return scoreDifferenceWithBeansLeft(boardState);
+		}
+		throw new UndefinedUtilityFunctionException();
 	}
 
 	// =========================================================================
@@ -184,16 +206,116 @@ public class AlphaBetaMinimax {
 	}
 
 	/**
-	 * The utility of a state might be the number of seeds the best move from
-	 * the state can get you
-	 * 
-	 * @param boardState
-	 * @return
+	 * The more beans we have on our side, the more control we have, and the
+	 * more likely it is that our opponent can't make a move. Thus, we might
+	 * want to factor in the number of beans on either side.
 	 */
-	private int bestMove(BohnenspielBoardState boardState) {
-		// TODO implement
-		return 0;
+	private int scoreAndBeanDifference(BohnenspielBoardState boardState) {
+		int[][] pits = boardState.getPits();
+		int myBeans = 0;
+		int yourBeans = 0;
+		for (Integer beans : pits[this.player]) {
+			myBeans += beans;
+		}
+		for (Integer beans : pits[1 - this.player]) {
+			yourBeans += beans;
+		}
+		return (boardState.getScore(this.player) - boardState.getScore(1 - this.player)) + (myBeans - yourBeans);
 	}
 
+	/**
+	 * Same as the above except we don't value bean difference as highly.
+	 */
+	private int scoreAndBeanDifference2(BohnenspielBoardState boardState) {
+		int[][] pits = boardState.getPits();
+		int myBeans = 0;
+		int yourBeans = 0;
+		for (Integer beans : pits[this.player]) {
+			myBeans += beans;
+		}
+		for (Integer beans : pits[1 - this.player]) {
+			yourBeans += beans;
+		}
+		return (boardState.getScore(this.player) - boardState.getScore(1 - this.player))
+				+ (int) (0.5 * (myBeans - yourBeans));
+	}
+
+	/**
+	 * Same as the above but now we also factor in the number of beans left. The
+	 * fewer beans left, the closer we are to winning (assuming we are ahead).
+	 */
+	private int scoreAndBeanDifferenceWithBeansLeft(BohnenspielBoardState boardState) {
+		int[][] pits = boardState.getPits();
+		int myBeans = 0;
+		int yourBeans = 0;
+		for (Integer beans : pits[this.player]) {
+			myBeans += beans;
+		}
+		for (Integer beans : pits[1 - this.player]) {
+			yourBeans += beans;
+		}
+		return (MAX_BEANS - (myBeans + yourBeans))
+				* (boardState.getScore(this.player) - boardState.getScore(1 - this.player))
+				+ (int) (0.5 * (myBeans - yourBeans));
+	}
+
+	private int scoreAndBeanDifferenceWithBeansLeft2(BohnenspielBoardState boardState) {
+		int[][] pits = boardState.getPits();
+		int myBeans = 0;
+		int yourBeans = 0;
+		for (Integer beans : pits[this.player]) {
+			myBeans += beans;
+		}
+		for (Integer beans : pits[1 - this.player]) {
+			yourBeans += beans;
+		}
+		return (MAX_BEANS - (myBeans + yourBeans))
+				* ((boardState.getScore(this.player) - boardState.getScore(1 - this.player))
+						+ (int) (0.5 * (myBeans - yourBeans)));
+	}
+
+	private int scoreAndBeanDifferenceWithBeansLeft3(BohnenspielBoardState boardState) {
+		int[][] pits = boardState.getPits();
+		int myBeans = 0;
+		int yourBeans = 0;
+		for (Integer beans : pits[this.player]) {
+			myBeans += beans;
+		}
+		for (Integer beans : pits[1 - this.player]) {
+			yourBeans += beans;
+		}
+		return (MAX_BEANS / Math.max(myBeans + yourBeans, 1))
+				* ((boardState.getScore(this.player) - boardState.getScore(1 - this.player))
+						+ (int) (0.5 * (myBeans - yourBeans)));
+	}
+
+	private int scoreAndBeanDifferenceWithBeansLeft4(BohnenspielBoardState boardState) {
+		int[][] pits = boardState.getPits();
+		int myBeans = 0;
+		int yourBeans = 0;
+		for (Integer beans : pits[this.player]) {
+			myBeans += beans;
+		}
+		for (Integer beans : pits[1 - this.player]) {
+			yourBeans += beans;
+		}
+		return (MAX_BEANS - (myBeans + yourBeans))
+				* (2 * (boardState.getScore(this.player) - boardState.getScore(1 - this.player))
+						+ (int) (0.5 * (myBeans - yourBeans)));
+	}
+
+	private int scoreDifferenceWithBeansLeft(BohnenspielBoardState boardState) {
+		int[][] pits = boardState.getPits();
+		int myBeans = 0;
+		int yourBeans = 0;
+		for (Integer beans : pits[this.player]) {
+			myBeans += beans;
+		}
+		for (Integer beans : pits[1 - this.player]) {
+			yourBeans += beans;
+		}
+		return (MAX_BEANS - (myBeans + yourBeans))
+				* (boardState.getScore(this.player) - boardState.getScore(1 - this.player));
+	}
 
 }
