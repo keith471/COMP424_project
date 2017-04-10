@@ -29,7 +29,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	// the number of moves we've made so far
 	private int numMovesMade = 0;
 	// number of moves to begin with (a good number determined experimentally)
-	private int numMovesToSimulate = 8;
+	private int numMovesToSimulate = 9;
 
 	// the player that we are (0 or 1)
 	private int player;
@@ -58,6 +58,11 @@ public class StudentPlayer extends BohnenspielPlayer {
 			// pruning
 			this.player = boardState.getTurnPlayer();
 			return getFirstMoveAB(boardState);
+		} else if (this.numMovesMade == 1) {
+			// the second move can time out with the normal heuristic that we
+			// use. Thus, we use a similar heuristic that computes sightly
+			// faster for this move.
+			return getSecondMoveAB(boardState);
 		}
 
 		// get subsequent moves as determined by minimax with alph-beta pruning
