@@ -17,12 +17,12 @@ public class StudentPlayer extends BohnenspielPlayer {
 	// the maximum amount of time in milliseconds that we have to make the first move
 	private static final int BUFFER_TIME = 100;
 	// cap on the maximum number of moves allowed
-	private static final int MAX_MOVES = 16;
+	private static final int MAX_MOVES = 11;
 
 	// the number of moves to take in the initial move
-	private static final int INITIAL_MOVES = 10;
+	private static final int INITIAL_MOVES = 12;
 	// number of moves to begin with (a good number determined experimentally)
-	private int numMovesToSimulate = 8;
+	private int numMovesToSimulate = 9;
 	// whether or not it is the first move
 	private boolean isFirstMove = true;
 
