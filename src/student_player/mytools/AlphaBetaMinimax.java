@@ -187,9 +187,9 @@ public class AlphaBetaMinimax {
 			return scoreAndBeanDifference2(boardState);
 		} else if (this.utilityFunction == 3) {
 			return scoreAndBeanDifferenceWithBeansLeft(boardState);
-		} else if (this.utilityFunction == 4 && this.numMovesMade != 1) {
+		} else if (this.utilityFunction == 4 && (this.numMovesMade < 1 || this.numMovesMade > 2)) {
 			return scoreAndBeanDifferenceWithBeansLeft2(boardState);
-		} else if (this.utilityFunction == 4 && this.numMovesMade == 1) {
+		} else if (this.utilityFunction == 4) {
 			return scoreAndBeanDifferenceWithBeansLeft3(boardState);
 		} else if (this.utilityFunction == 5) {
 			return scoreAndBeanDifferenceWithBeansLeft3(boardState);
