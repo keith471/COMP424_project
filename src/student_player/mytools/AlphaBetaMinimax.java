@@ -19,9 +19,18 @@ public class AlphaBetaMinimax {
 	// an integer indicating the utility function to use
 	private int utilityFunction;
 
+	private int numMovesMade;
+
 	public AlphaBetaMinimax(int player, int utilityFunction) {
 		this.player = player;
 		this.utilityFunction = utilityFunction;
+		this.numMovesMade = 0;
+	}
+
+	public AlphaBetaMinimax(int player, int utilityFunction, int numMovesMade) {
+		this.player = player;
+		this.utilityFunction = utilityFunction;
+		this.numMovesMade = numMovesMade;
 	}
 
 	/**
@@ -178,8 +187,10 @@ public class AlphaBetaMinimax {
 			return scoreAndBeanDifference2(boardState);
 		} else if (this.utilityFunction == 3) {
 			return scoreAndBeanDifferenceWithBeansLeft(boardState);
-		} else if (this.utilityFunction == 4) {
+		} else if (this.utilityFunction == 4 && this.numMovesMade != 1) {
 			return scoreAndBeanDifferenceWithBeansLeft2(boardState);
+		} else if (this.utilityFunction == 4 && this.numMovesMade == 1) {
+			return scoreAndBeanDifferenceWithBeansLeft4(boardState);
 		} else if (this.utilityFunction == 5) {
 			return scoreAndBeanDifferenceWithBeansLeft3(boardState);
 		} else if (this.utilityFunction == 6) {
