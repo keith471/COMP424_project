@@ -2,7 +2,6 @@ package student_player.mytools;
 
 import bohnenspiel.BohnenspielBoardState;
 import bohnenspiel.BohnenspielMove;
-import student_player.exceptions.InvalidDepthException;
 
 /**
  * Minimax with alpha-beta pruning
@@ -26,7 +25,7 @@ public class AlphaBetaMinimax {
 
 	/**
 	 * Chooses a move based on the minimax algorithm and given a copy of the
-	 * current board state
+	 * current board state. Uses alpha-beta pruning to speed up the computation.
 	 * 
 	 * @param boardState
 	 *            - a copy of the current board state
@@ -62,6 +61,7 @@ public class AlphaBetaMinimax {
 				// this move results in us losing --> move onto the next move
 				continue;
 			}
+			// update the best move/score if applicable
 			if (projectedMoveScore > bestScore) {
 				bestScore = projectedMoveScore;
 				alpha = projectedMoveScore;
@@ -78,8 +78,7 @@ public class AlphaBetaMinimax {
 	}
 
 	/**
-	 * Min player's move. The min player SUBTRACTS any score they gain from
-	 * making a move.
+	 * Min player's move.
 	 * 
 	 * @param boardState
 	 * @return
@@ -109,6 +108,7 @@ public class AlphaBetaMinimax {
 				// this move results in the min player winning
 				return Integer.MIN_VALUE;
 			}
+			// update the best score (and beta) if applicable
 			if (projectedMoveScore < bestScore) {
 				bestScore = projectedMoveScore;
 				beta = projectedMoveScore;
@@ -155,6 +155,7 @@ public class AlphaBetaMinimax {
 				// different move
 				continue;
 			}
+			// update the best score and alpha if applicable
 			if (projectedMoveScore > bestScore) {
 				bestScore = projectedMoveScore;
 				alpha = projectedMoveScore;
@@ -169,6 +170,14 @@ public class AlphaBetaMinimax {
 		return bestScore;
 	}
 
+	/**
+	 * Computes and returns the value of a utility function, based on the
+	 * utility function specified when this AlphaBetaMinimax object was created
+	 * 
+	 * @param boardState
+	 * @return
+	 * @throws UndefinedUtilityFunctionException
+	 */
 	private int getUtility(BohnenspielBoardState boardState) throws UndefinedUtilityFunctionException {
 		if (this.utilityFunction == 0) {
 			return scoreDifference(boardState);
@@ -259,6 +268,13 @@ public class AlphaBetaMinimax {
 				+ (int) (0.5 * (myBeans - yourBeans));
 	}
 
+	/**
+	 * Similar to the above, but we group the bean difference with the score
+	 * difference
+	 * 
+	 * @param boardState
+	 * @return
+	 */
 	private int scoreAndBeanDifferenceWithBeansLeft2(BohnenspielBoardState boardState) {
 		int[][] pits = boardState.getPits();
 		int myBeans = 0;
@@ -270,10 +286,17 @@ public class AlphaBetaMinimax {
 			yourBeans += beans;
 		}
 		return (MAX_BEANS - (myBeans + yourBeans))
-				* ((boardState.getScore(this.player) - boardState.getScore(1 - this.player))
+				* (3 * (boardState.getScore(this.player) - boardState.getScore(1 - this.player))
 						+ (int) (0.5 * (myBeans - yourBeans)));
 	}
 
+	/**
+	 * Similar to the above, but we multiply by the ratio of total beans to
+	 * beans left rather than total beans used up
+	 * 
+	 * @param boardState
+	 * @return
+	 */
 	private int scoreAndBeanDifferenceWithBeansLeft3(BohnenspielBoardState boardState) {
 		int[][] pits = boardState.getPits();
 		int myBeans = 0;
@@ -289,6 +312,13 @@ public class AlphaBetaMinimax {
 						+ (int) (0.5 * (myBeans - yourBeans)));
 	}
 
+	/**
+	 * Similar to scoreAndBeanDifferenceWithBeansLeft2 except we now multiply
+	 * the score difference by 2
+	 * 
+	 * @param boardState
+	 * @return
+	 */
 	private int scoreAndBeanDifferenceWithBeansLeft4(BohnenspielBoardState boardState) {
 		int[][] pits = boardState.getPits();
 		int myBeans = 0;
@@ -304,6 +334,13 @@ public class AlphaBetaMinimax {
 						+ (int) (0.5 * (myBeans - yourBeans)));
 	}
 
+	/**
+	 * Same as scoreAndBeanDifferenceWithBeansLeft, but we don't consider the
+	 * bean difference
+	 * 
+	 * @param boardState
+	 * @return
+	 */
 	private int scoreDifferenceWithBeansLeft(BohnenspielBoardState boardState) {
 		int[][] pits = boardState.getPits();
 		int myBeans = 0;

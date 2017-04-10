@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import bohnenspiel.BohnenspielBoardState;
 import bohnenspiel.BohnenspielMove;
-import student_player.exceptions.InvalidDepthException;
 
 /**
  * Minimax with memory

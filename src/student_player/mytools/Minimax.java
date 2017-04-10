@@ -2,7 +2,6 @@ package student_player.mytools;
 
 import bohnenspiel.BohnenspielBoardState;
 import bohnenspiel.BohnenspielMove;
-import student_player.exceptions.InvalidDepthException;
 
 public class Minimax {
 
@@ -158,17 +157,5 @@ public class Minimax {
 	 */
 	private int scoreDifference(BohnenspielBoardState boardState) {
 		return boardState.getScore(this.player) - boardState.getScore(1 - this.player);
-	}
-
-	/**
-	 * The utility of a state might be the number of seeds the best move from
-	 * the state can get you
-	 * 
-	 * @param boardState
-	 * @return
-	 */
-	private int bestMove(BohnenspielBoardState boardState) {
-		// TODO implement
-		return 0;
 	}
 }
