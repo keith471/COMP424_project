@@ -69,7 +69,10 @@ public class StudentPlayer extends BohnenspielPlayer {
 	 */
 	private BohnenspielMove getFirstMoveAB(BohnenspielBoardState boardState) {
 		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), 4);
+		long start = System.currentTimeMillis();
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, INITIAL_MOVES);
+		long end = System.currentTimeMillis();
+		System.out.println("First move computed in " + (end - start) + " milliseconds");
 
 		// don't waste a skip on the first move
 		/*
