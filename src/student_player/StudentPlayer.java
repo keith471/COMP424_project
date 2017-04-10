@@ -22,7 +22,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	private static final int EARLY_MAX_MOVES = 10;
 	// we make EARLY_MAX_MOVES the maximum number of allowable moves up to
 	// NUM_EARLY_MOVES moves into the game
-	private static final int NUM_EARLY_MOVES = 6;
+	private static final int NUM_EARLY_MOVES = 8;
 	// the number of moves to take in the initial move
 	private static final int INITIAL_MOVES = 10;
 
