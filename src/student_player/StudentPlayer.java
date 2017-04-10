@@ -20,7 +20,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	private static final int MAX_MOVES = 11;
 
 	// the number of moves to take in the initial move
-	private static final int INITIAL_MOVES = 12;
+	private static final int INITIAL_MOVES = 11;
 	// number of moves to begin with (a good number determined experimentally)
 	private int numMovesToSimulate = 9;
 	// whether or not it is the first move
