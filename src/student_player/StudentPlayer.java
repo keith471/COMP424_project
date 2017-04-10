@@ -58,11 +58,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 			// pruning
 			this.player = boardState.getTurnPlayer();
 			return getFirstMoveAB(boardState);
-		} else if (this.numMovesMade == 1) {
-			// the second move can time out with the normal heuristic that we
-			// use. Thus, we use a similar heuristic that computes sightly
-			// faster for this move.
-			return getSecondMoveAB(boardState);
 		}
 
 		// get subsequent moves as determined by minimax with alph-beta pruning
@@ -81,7 +76,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	 * @return
 	 */
 	private BohnenspielMove getFirstMoveAB(BohnenspielBoardState boardState) {
-		AlphaBetaMinimax abmm = new AlphaBetaMinimax(this.player, 4);
+		AlphaBetaMinimax abmm = new AlphaBetaMinimax(this.player, 5);
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, INITIAL_MOVES);
 		this.numMovesMade++;
 		return mresp.getMove();
@@ -124,7 +119,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	 */
 	private BohnenspielMove getMoveAB(BohnenspielBoardState boardState) {
 		// Use heuristic 4
-		AlphaBetaMinimax abmm = new AlphaBetaMinimax(this.player, 4);
+		AlphaBetaMinimax abmm = new AlphaBetaMinimax(this.player, 5);
 		long start = System.currentTimeMillis();
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, this.numMovesToSimulate);
 		long end = System.currentTimeMillis();

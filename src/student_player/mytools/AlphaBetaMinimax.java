@@ -308,8 +308,8 @@ public class AlphaBetaMinimax {
 			yourBeans += beans;
 		}
 		return (MAX_BEANS / Math.max(myBeans + yourBeans, 1))
-				* ((boardState.getScore(this.player) - boardState.getScore(1 - this.player))
-						+ (int) (0.5 * (myBeans - yourBeans)));
+				* (3 * (boardState.getScore(this.player) - boardState.getScore(1 - this.player))
+						+ (myBeans - yourBeans));
 	}
 
 	/**
