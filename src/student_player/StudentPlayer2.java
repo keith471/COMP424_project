@@ -59,7 +59,7 @@ public class StudentPlayer2 extends BohnenspielPlayer {
 
 	private BohnenspielMove getFirstMoveAB(BohnenspielBoardState boardState) {
 		// TODO improve
-		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), "scoreAndBeanDifference");
+		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), 1);
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, 10);
 
 		// don't waste a skip on the first move
@@ -73,7 +73,7 @@ public class StudentPlayer2 extends BohnenspielPlayer {
 	}
 
 	private BohnenspielMove getMoveAB(BohnenspielBoardState boardState) {
-		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), "scoreAndBeanDifference");
+		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), 1);
 		long start = System.currentTimeMillis();
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, this.numMovesToSimulate);
 		long end = System.currentTimeMillis();

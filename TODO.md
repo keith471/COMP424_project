@@ -1,11 +1,7 @@
 # TODO
 
-- get some results for alpha-beta pruning
-- try OptiMinimax on Trottier servers
+- test on McGill servers to determine how to set number of moves
 
-- improve the function! there are other important things besides difference in score between you and opponent
-	- magnitude of score (higher the magnitude, the closer you are to winning!)
-	- number of beans on your side (maybe?)
-	- etc.
-	- incrementally improve function and get results for report
+- get some results for alpha-beta pruning
+
 - improve get first move

@@ -16,10 +16,10 @@ public class AlphaBetaMinimax {
 
 	// the id of the max player
 	private int player;
-	// the name of the utility function
-	private String utilityFunction;
+	// an integer indicating the utility function to use
+	private int utilityFunction;
 
-	public AlphaBetaMinimax(int player, String utilityFunction) {
+	public AlphaBetaMinimax(int player, int utilityFunction) {
 		this.player = player;
 		this.utilityFunction = utilityFunction;
 	}
@@ -170,21 +170,21 @@ public class AlphaBetaMinimax {
 	}
 
 	private int getUtility(BohnenspielBoardState boardState) throws UndefinedUtilityFunctionException {
-		if (this.utilityFunction.equals("scoreDifference")) {
+		if (this.utilityFunction == 0) {
 			return scoreDifference(boardState);
-		} else if (this.utilityFunction.equals("scoreAndBeanDifference")) {
+		} else if (this.utilityFunction == 1) {
 			return scoreAndBeanDifference(boardState);
-		} else if (this.utilityFunction.equals("scoreAndBeanDifference2")) {
+		} else if (this.utilityFunction == 2) {
 			return scoreAndBeanDifference2(boardState);
-		} else if (this.utilityFunction.equals("scoreAndBeanDifferenceWithBeansLeft")) {
+		} else if (this.utilityFunction == 3) {
 			return scoreAndBeanDifferenceWithBeansLeft(boardState);
-		} else if (this.utilityFunction.equals("scoreAndBeanDifferenceWithBeansLeft2")) {
+		} else if (this.utilityFunction == 4) {
 			return scoreAndBeanDifferenceWithBeansLeft2(boardState);
-		} else if (this.utilityFunction.equals("scoreAndBeanDifferenceWithBeansLeft3")) {
+		} else if (this.utilityFunction == 5) {
 			return scoreAndBeanDifferenceWithBeansLeft3(boardState);
-		} else if (this.utilityFunction.equals("scoreAndBeanDifferenceWithBeansLeft4")) {
+		} else if (this.utilityFunction == 6) {
 			return scoreAndBeanDifferenceWithBeansLeft4(boardState);
-		} else if (this.utilityFunction.equals("scoreDifferenceWithBeansLeft")) {
+		} else if (this.utilityFunction == 7) {
 			return scoreDifferenceWithBeansLeft(boardState);
 		}
 		throw new UndefinedUtilityFunctionException();
