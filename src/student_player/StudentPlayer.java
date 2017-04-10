@@ -18,13 +18,17 @@ public class StudentPlayer extends BohnenspielPlayer {
 	private static final int BUFFER_TIME = 100;
 	// cap on the maximum number of moves allowed
 	private static final int MAX_MOVES = 11;
-
+	// 11 moves is sometimes too many early in the game
+	private static final int EARLY_MAX_MOVES = 10;
+	// we make EARLY_MAX_MOVES the maximum number of allowable moves up to
+	// NUM_EARLY_MOVES moves into the game
+	private static final int NUM_EARLY_MOVES = 6;
 	// the number of moves to take in the initial move
 	private static final int INITIAL_MOVES = 10;
+
+	private int numMovesMade = 0;
 	// number of moves to begin with (a good number determined experimentally)
 	private int numMovesToSimulate = 8;
-	// whether or not it is the first move
-	private boolean isFirstMove = true;
 
 	// store the OptiMinimax object
 	private final OptiMinimax omm = new OptiMinimax();
@@ -45,8 +49,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	 */
 	@Override
 	public BohnenspielMove chooseMove(BohnenspielBoardState boardState) {
-		if (this.isFirstMove) {
-			this.isFirstMove = false;
+		if (this.numMovesMade == 0) {
 			// get the first move as determined by minimax with alpha-beta
 			// pruning
 			return getFirstMoveAB(boardState);
@@ -80,7 +83,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 			return (BohnenspielMove) boardState.getRandomMove();
 		}
 		*/
-
+		this.numMovesMade++;
 		return mresp.getMove();
 	}
 
@@ -101,6 +104,10 @@ public class StudentPlayer extends BohnenspielPlayer {
 		if ((end - start) >= MAX_TIME) {
 			// exponential back-off
 			this.numMovesToSimulate = Math.max(1, this.numMovesToSimulate / 2);
+		} else if (this.numMovesMade < NUM_EARLY_MOVES) {
+			if (this.numMovesToSimulate < EARLY_MAX_MOVES && (end - start + BUFFER_TIME) < MAX_TIME) {
+				this.numMovesToSimulate++;
+			}
 		} else if (this.numMovesToSimulate < MAX_MOVES && (end - start + BUFFER_TIME) < MAX_TIME) {
 			this.numMovesToSimulate++;
 		}
@@ -115,6 +122,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 			}
 		}
 
+		this.numMovesMade++;
 		return mresp.getMove();
 	}
 	
