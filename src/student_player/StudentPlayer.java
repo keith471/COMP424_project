@@ -87,7 +87,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	 * @return
 	 */
 	private BohnenspielMove getMoveAB(BohnenspielBoardState boardState) {
-		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), 4, this.numMovesMade);
+		AlphaBetaMinimax abmm = new AlphaBetaMinimax(boardState.getTurnPlayer(), 4);
 		long start = System.currentTimeMillis();
 		MinimaxResponse mresp = abmm.minimaxDecision(boardState, this.numMovesToSimulate);
 		long end = System.currentTimeMillis();

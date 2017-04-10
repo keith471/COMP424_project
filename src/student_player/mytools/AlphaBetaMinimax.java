@@ -19,18 +19,9 @@ public class AlphaBetaMinimax {
 	// an integer indicating the utility function to use
 	private int utilityFunction;
 
-	private int numMovesMade;
-
 	public AlphaBetaMinimax(int player, int utilityFunction) {
 		this.player = player;
 		this.utilityFunction = utilityFunction;
-		this.numMovesMade = 0;
-	}
-
-	public AlphaBetaMinimax(int player, int utilityFunction, int numMovesMade) {
-		this.player = player;
-		this.utilityFunction = utilityFunction;
-		this.numMovesMade = numMovesMade;
 	}
 
 	/**
