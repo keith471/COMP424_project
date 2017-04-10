@@ -190,7 +190,6 @@ public class AlphaBetaMinimax {
 		} else if (this.utilityFunction == 4 && this.numMovesMade != 1) {
 			return scoreAndBeanDifferenceWithBeansLeft2(boardState);
 		} else if (this.utilityFunction == 4 && this.numMovesMade == 1) {
-			System.out.println("here!");
 			return scoreAndBeanDifferenceWithBeansLeft3(boardState);
 		} else if (this.utilityFunction == 5) {
 			return scoreAndBeanDifferenceWithBeansLeft3(boardState);
