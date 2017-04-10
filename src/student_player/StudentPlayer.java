@@ -29,7 +29,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	// the number of moves we've made so far
 	private int numMovesMade = 0;
 	// number of moves to begin with (a good number determined experimentally)
-	private int numMovesToSimulate = 9;
+	private int numMovesToSimulate = 8;
 
 	// the player that we are (0 or 1)
 	private int player;
