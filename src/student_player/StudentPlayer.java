@@ -58,11 +58,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 			// pruning
 			this.player = boardState.getTurnPlayer();
 			return getFirstMoveAB(boardState);
-		} else if (this.numMovesMade == 1) {
-			// the second move can time out with the normal heuristic that we
-			// use. Thus, we use a similar heuristic that computes sightly
-			// faster for this move.
-			return getSecondMoveAB(boardState);
 		}
 
 		// get subsequent moves as determined by minimax with alph-beta pruning
