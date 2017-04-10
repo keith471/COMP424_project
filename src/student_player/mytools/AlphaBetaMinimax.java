@@ -287,7 +287,7 @@ public class AlphaBetaMinimax {
 		}
 		return (MAX_BEANS - (myBeans + yourBeans))
 				* (3 * (boardState.getScore(this.player) - boardState.getScore(1 - this.player))
-						+ (int) (0.5 * (myBeans - yourBeans)));
+						+ (myBeans - yourBeans));
 	}
 
 	/**
