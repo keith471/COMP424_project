@@ -88,35 +88,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 	 * @param boardState
 	 * @return
 	 */
-	private BohnenspielMove getSecondMoveAB(BohnenspielBoardState boardState) {
-		// Use heuristic 5
-		AlphaBetaMinimax abmm = new AlphaBetaMinimax(this.player, 5);
-		MinimaxResponse mresp = abmm.minimaxDecision(boardState, this.numMovesToSimulate);
-
-		// decrement the number of moves to simulate by 1, since the heuristic
-		// to be used in later steps takes a bit longer to compute
-		this.numMovesToSimulate--;
-
-		// if Minimax says we should skip, then try to skip
-		if (mresp.getShouldSkip()) {
-			if (boardState.getCredit(this.player) > 0) {
-				return new BohnenspielMove("skip", this.player);
-			} else {
-				// try a random move and hope for the best
-				return (BohnenspielMove) boardState.getRandomMove();
-			}
-		}
-
-		this.numMovesMade++;
-		return mresp.getMove();
-	}
-
-	/**
-	 * Returns a move to play, determined by minimax with alpha-beta pruning
-	 * 
-	 * @param boardState
-	 * @return
-	 */
 	private BohnenspielMove getMoveAB(BohnenspielBoardState boardState) {
 		// Use heuristic 4
 		AlphaBetaMinimax abmm = new AlphaBetaMinimax(this.player, 5);
